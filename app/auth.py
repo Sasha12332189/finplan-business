@@ -86,6 +86,10 @@ class Ctx:
     def need_business(self) -> tuple[Business, Member]:
         if self.business is None or self.member is None:
             raise HTTPException(status_code=409, detail={"code": "onboarding", "message": "Create a business first"})
+        from . import plans
+        # After a downgrade, members whose role the plan no longer includes lose access until it is renewed.
+        if self.member.role != "owner" and self.member.role not in plans.limits_for(self.business)["roles"]:
+            raise plans.upgrade_error(self.business, "roles", value=self.member.role)
         return self.business, self.member
 
 

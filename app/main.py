@@ -20,6 +20,7 @@ from . import jobs, jobs_money, runtime  # noqa: F401  (jobs_money registers its
 from .api import api
 from .api_money import router as money_router
 from .api_ai import router as ai_router
+from .team import api as team_router
 from . import ai, banks
 from .bot import configure_commands, dispatcher
 from .config import get_settings
@@ -112,6 +113,7 @@ app.mount("/assets", StaticFiles(directory=STATIC), name="assets")
 app.include_router(api)
 app.include_router(money_router)
 app.include_router(ai_router)
+app.include_router(team_router)
 ai.install()  # weekly insights in reports
 jobs.EXTRA_JOBS.append(banks.sync_job)
 

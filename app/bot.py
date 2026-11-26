@@ -345,7 +345,8 @@ async def save_quick_entry(message: Message, text: str, source: str = "bot") -> 
             await session.commit()
             await message.answer(T(lang, "need_business"))
             return True
-        if not plans.can(member.role, "add_operation"):
+        if not plans.can(member.role, "add_operation") or (
+                member.role != "owner" and member.role not in plans.limits_for(business)["roles"]):
             await session.commit()
             await message.answer(T(lang, "not_allowed"))
             return True
