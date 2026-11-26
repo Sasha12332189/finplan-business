@@ -315,7 +315,7 @@ function renderHome(){
   $$('[data-period]', v).forEach(b => b.addEventListener('click', () => { S.period = b.dataset.period; loadHome(); }));
   const tc = $('#tax-card'); if (tc) tc.addEventListener('click', () => { S.docsTab = 'taxes'; go('docs'); });
   $$('[data-goto]', v).forEach(r => r.addEventListener('click', () => go(r.dataset.goto)));
-  const add = $('#add-op'); if (add) add.addEventListener('click', () => opForm());
+  const add = $('#add-op'); if (add) add.addEventListener('click', () => window.FB.opForm());
   if (window.FB.afterHome) window.FB.afterHome(v);
 }
 function addButton(){ return can('add_operation') ? `<button class="btn big" id="add-op">${icon('plus')} ${t('addOp')}</button>` : ''; }
@@ -410,7 +410,7 @@ TABS.ops = async function(){
   $('#flt').addEventListener('click', () => { S.showFilters = !S.showFilters; $('#filters').hidden = !S.showFilters; });
   $$('[data-kind]', v).forEach(b => b.addEventListener('click', () => { f.kind = b.dataset.kind; $$('[data-kind]', v).forEach(x => x.classList.toggle('on', x === b)); load(); }));
   $$('[data-f]', v).forEach(s => s.addEventListener('change', () => { f[s.dataset.f] = s.value; load(); }));
-  const add = $('#add-op'); if (add) add.addEventListener('click', () => opForm());
+  const add = $('#add-op'); if (add) add.addEventListener('click', () => window.FB.opForm());
   load();
 };
 function renderOps(){
@@ -422,7 +422,7 @@ function renderOps(){
     const net = rows.reduce((a, o) => a + (o.kind === 'income' ? +o.amount_base : o.kind === 'expense' ? -o.amount_base : 0), 0);
     return `<div class="day-head"><span>${fmtDate(day, {weekday:'short', day:'numeric', month:'long'})}</span><span>${money(net, null, true)}</span></div><div class="card">${rows.map(opRow).join('')}</div>`;
   }).join('');
-  $$('[data-op]', list).forEach(r => r.addEventListener('click', () => { const o = S.ops.find(x => x.id === Number(r.dataset.op)); if (o) opForm(o); }));
+  $$('[data-op]', list).forEach(r => r.addEventListener('click', () => { const o = S.ops.find(x => x.id === Number(r.dataset.op)); if (o) window.FB.opForm(o); }));
 }
 
 /* ------------------------------------------------------------------ documents (taxes) */

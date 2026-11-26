@@ -19,6 +19,8 @@ from . import handlers  # noqa: F401  registers every bot router in the right or
 from . import jobs, jobs_money, runtime  # noqa: F401  (jobs_money registers its jobs)
 from .api import api
 from .api_money import router as money_router
+from .api_ai import router as ai_router
+from . import ai, banks
 from .bot import configure_commands, dispatcher
 from .config import get_settings
 from .database import close_database, init_database
@@ -109,6 +111,9 @@ app = FastAPI(title="finplan Business", version="1.0.0", lifespan=lifespan)
 app.mount("/assets", StaticFiles(directory=STATIC), name="assets")
 app.include_router(api)
 app.include_router(money_router)
+app.include_router(ai_router)
+ai.install()  # weekly insights in reports
+jobs.EXTRA_JOBS.append(banks.sync_job)
 
 
 @app.middleware("http")

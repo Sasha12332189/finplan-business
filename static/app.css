@@ -186,7 +186,8 @@ input.in:focus,select.in:focus,textarea.in:focus{border-color:var(--primary-2)}
 .locked .unlock{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:8px;text-align:center;padding:16px}
 
 .chat{display:grid;gap:10px;margin-bottom:12px}
-.msg{max-width:88%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg{max-width:88%;padding:10px 13px;border-radius:16px;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.msg .mt{white-space:pre-wrap}
 .msg.me{justify-self:end;background:var(--primary);color:var(--on-primary);border-bottom-right-radius:6px}
 .msg.ai{justify-self:start;background:var(--surface-2);border-bottom-left-radius:6px}
 .draft{border:1px dashed var(--primary-2);border-radius:14px;padding:10px 12px;margin-top:8px;background:var(--surface)}

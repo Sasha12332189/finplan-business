@@ -522,14 +522,18 @@ fallback_router = Router(name="fallback")
 
 @fallback_router.message(F.text & ~F.text.startswith("/"))
 async def quick_entry(message: Message) -> None:
-    if await save_quick_entry(message, message.text or ""):
+    from . import ai, ai_bot  # questions and multi-item messages go to the AI assistant
+
+    text = message.text or ""
+    if ai.enabled() and ai_bot.wants_ai(text):
+        await ai_bot.answer_free_text(message)
         return
-    try:
-        from . import ai_bot  # questions in plain words go to the AI assistant
-    except ImportError:
+    if await save_quick_entry(message, text):
+        return
+    if ai.enabled():
+        await ai_bot.answer_free_text(message)
+    else:
         await help_command(message)
-        return
-    await ai_bot.answer_free_text(message)
 
 
 # ---------------------------------------------------------------- entry points
