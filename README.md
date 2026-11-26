@@ -63,7 +63,7 @@ Railway сам задаёт `PORT`, `RAILWAY_PUBLIC_DOMAIN`, `RAILWAY_ENVIRONMEN
 
 ## Деплой на Railway
 
-1. **New Project → Deploy from GitHub repo** → `Sasha12332189/finplan-business`. Railway соберёт [`Dockerfile`](Dockerfile) (в нём ставятся шрифты DejaVu для кириллицы в PDF) и запустит `python start_railway.py` ([`railway.json`](railway.json), проверка здоровья `/health`).
+1. **New Project → Deploy from GitHub repo** → `Sasha12332189/finplan-business`. Railway сам найдёт [`Dockerfile`](Dockerfile) (в нём ставятся шрифты DejaVu для кириллицы в PDF) и запустит `python start_railway.py`. Проверка: `/health`.
 2. В проекте **+ New → Database → PostgreSQL**. В сервисе приложения → **Variables** добавьте `DATABASE_URL` = `${{Postgres.DATABASE_URL}}`.
 3. **Settings → Networking → Generate Domain** — получите адрес вида `finplan-business-production.up.railway.app`.
 4. Переменные: `BUSINESS_BOT_TOKEN`, `PUBLIC_APP_URL` (адрес из шага 3 с `https://`), `ANTHROPIC_API_KEY`, `ENCRYPTION_KEY`, `SUPPORT_CONTACT`, при желании `ADMIN_TELEGRAM_IDS`, `AI_MODEL_FAST`, `TRANSCRIPTION_*`, `PERSONAL_APP_URL`.
