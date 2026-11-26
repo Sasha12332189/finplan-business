@@ -16,8 +16,9 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from . import handlers  # noqa: F401  registers every bot router in the right order
-from . import jobs
+from . import jobs, jobs_money, runtime  # noqa: F401  (jobs_money registers its jobs)
 from .api import api
+from .api_money import router as money_router
 from .bot import configure_commands, dispatcher
 from .config import get_settings
 from .database import close_database, init_database
@@ -26,7 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STATIC = ROOT / "static"
 JOB_INTERVAL_SECONDS = 5 * 60
 
-telegram_bot: Bot | None = None
+telegram_bot: Bot | None = None  # also published as app.runtime.bot
 bot_username: str | None = None
 
 
@@ -52,9 +53,9 @@ async def lifespan(_: FastAPI):
             logging.warning("Telegram disabled: BUSINESS_BOT_TOKEN is missing")
             return
         bot = Bot(settings.bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
-        telegram_bot = bot
+        telegram_bot = runtime.bot = bot
         try:
-            bot_username = (await bot.get_me()).username
+            bot_username = runtime.bot_username = (await bot.get_me()).username
         except Exception:
             logging.exception("getMe failed")
         if not settings.public_app_url.startswith("https://"):
@@ -88,7 +89,7 @@ async def lifespan(_: FastAPI):
             try:
                 await telegram_bot.session.close()
             finally:
-                telegram_bot = None
+                telegram_bot = runtime.bot = None
         await close_database()
 
 
@@ -107,6 +108,7 @@ async def background_jobs() -> None:
 app = FastAPI(title="finplan Business", version="1.0.0", lifespan=lifespan)
 app.mount("/assets", StaticFiles(directory=STATIC), name="assets")
 app.include_router(api)
+app.include_router(money_router)
 
 
 @app.middleware("http")

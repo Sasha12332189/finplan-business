@@ -428,7 +428,7 @@ function renderOps(){
 /* ------------------------------------------------------------------ documents (taxes) */
 TABS.docs = async function(){
   const v = $('#view');
-  const subs = window.FB.docTabs || [['taxes', t('taxes')]];
+  const subs = typeof window.FB.docTabs === 'function' ? window.FB.docTabs() : [['taxes', t('taxes')]];
   S.docsTab = S.docsTab || subs[0][0];
   v.innerHTML = `<h1>${t('tabDocs')}</h1><div class="chips">${subs.map(([k, l]) => `<button class="chip${S.docsTab === k ? ' on' : ''}" data-dt="${k}">${l}</button>`).join('')}</div><div id="doc-body"><div class="card" style="height:200px"></div></div>`;
   $$('[data-dt]', v).forEach(b => b.addEventListener('click', () => { S.docsTab = b.dataset.dt; TABS.docs(); }));
@@ -599,6 +599,5 @@ window.FB.setLang = l => { LANG = l; };
 window.FB.lang = () => LANG;
 if (tg) { try { tg.ready(); tg.expand(); tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch {} }
 applyTheme();
-document.addEventListener('DOMContentLoaded', () => {});
-setTimeout(boot, 0);
+document.addEventListener('DOMContentLoaded', boot);
 })();
